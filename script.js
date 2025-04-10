@@ -15,8 +15,17 @@ const divide = function divide (firstOperand, secondOperand) {
     return firstOperand / secondOperand;
 }
 
-console.log(add(3, 5));
-console.log(subtract(3, 5));
-console.log(multiply(3, 5));
-console.log(divide(1, 0));
-console.log(divide(0, 1));
+const operate = function operate (operator, firstOperand, secondOperand) {
+    switch (operator) {
+        case "+": return add(firstOperand, secondOperand);
+        case "-": return subtract(firstOperand, secondOperand);
+        case "*": return multiply(firstOperand, secondOperand);
+        case "/": return divide(firstOperand, secondOperand);
+    }
+}
+
+console.log(operate("+", 3, 5));
+console.log(operate("-", 3, 5));
+console.log(operate("*", 3, 5));
+console.log(operate("/", 1, 0));
+console.log(operate("/", 0, 1));
