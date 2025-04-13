@@ -94,6 +94,10 @@ p.text-display {
     padding: 1rem;
 }
 
+p.hidden {
+    opacity: 0;
+}
+
 div.calculator-keypad {
     display: flex;
     flex-direction: column;
