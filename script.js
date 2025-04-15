@@ -74,9 +74,10 @@ const processCalculatorInput = function processCalculatorInput (targetButtonInpu
 
     // First operand
     if (numberList.includes(targetButtonInput) && operatorHolder === "") {
+        const maxDigits = 15;
         // Considers decimal part as not included in the 15 digit limit.
-        if (firstOperandHolder.includes(".") && firstOperandHolder.length > 15) return alert("Can't enter more than 15 digits");
-        if (!firstOperandHolder.includes(".") && firstOperandHolder.length >= 15) return alert("Can't enter more than 15 digits.");
+        if (firstOperandHolder.includes(".") && firstOperandHolder.length > maxDigits) return alert("Can't enter more than 15 digits");
+        if (!firstOperandHolder.includes(".") && firstOperandHolder.length >= maxDigits) return alert("Can't enter more than 15 digits.");
         // Prevent trailing zeroes before decimal point
         if (targetButtonInput === "0" && firstOperandHolder.at(0) === "0" && !firstOperandHolder.includes(".")) return;
         // Prevent multiple decimal points
