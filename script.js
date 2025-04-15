@@ -74,8 +74,9 @@ const processCalculatorInput = function processCalculatorInput (targetButtonInpu
 
     // First operand
     if (numberList.includes(targetButtonInput) && operatorHolder === "") {
-        // TASK: Consider decimal part, it should not be included in the 15 digits.
-        if (firstOperandHolder.length >= 15) return alert("Can't enter more than 15 digits.");
+        // Considers decimal part as not included in the 15 digit limit.
+        if (firstOperandHolder.includes(".") && firstOperandHolder.length > 15) return alert("Can't enter more than 15 digits");
+        if (!firstOperandHolder.includes(".") && firstOperandHolder.length >= 15) return alert("Can't enter more than 15 digits.");
         // Prevent trailing zeroes before decimal point
         if (targetButtonInput === "0" && firstOperandHolder.at(0) === "0" && !firstOperandHolder.includes(".")) return;
         // Prevent multiple decimal points
@@ -118,8 +119,9 @@ const processCalculatorInput = function processCalculatorInput (targetButtonInpu
 
     // Second Operand
     if (numberList.includes(targetButtonInput) && operatorHolder !== "") {
-        // TASK: Consider decimal part, it should not be included in the 15 digits.
-        if (secondOperandHolder.length >= 15) return alert("Can't enter more than 15 digits.");
+        // Considers decimal part as not included in the 15 digit limit.
+        if (secondOperandHolder.includes(".") && secondOperandHolder.length > 15) return alert("Can't enter more than 15 digits");
+        if (!secondOperandHolder.includes(".") && secondOperandHolder.length >= 15) return alert("Can't enter more than 15 digits.");
         // Prevent trailing zeroes before decimal point
         if (targetButtonInput === "0" && secondOperandHolder.at(0) === "0" && !secondOperandHolder.includes(".")) return;
         // Prevent multiple decimal points
@@ -174,4 +176,19 @@ let isExpressionEvaluated = false;
 
 keyButtons.forEach( (button) => {
     button.addEventListener("click", () => processCalculatorInput(button.textContent));
+});
+
+// Keyboard support
+window.addEventListener("keydown", (event) => {
+    let keyboardInput = event.key;
+    
+    if (event.key === "%") keyboardInput = "mod";
+    if (event.key === "/") keyboardInput = "÷";
+    if (event.key === "*") keyboardInput = "×";
+    if (event.key === "-") keyboardInput = "–";
+    if (event.key === "Enter") keyboardInput = "=";
+    if (event.key === "Backspace") keyboardInput = "CE";
+    if (event.key === "Delete") keyboardInput = "C";
+
+    processCalculatorInput(keyboardInput);
 });
