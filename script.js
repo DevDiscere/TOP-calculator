@@ -193,3 +193,142 @@ window.addEventListener("keydown", (event) => {
 
     processCalculatorInput(keyboardInput);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('matrix-rain');
+    const ctx = canvas.getContext('2d');
+  
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  
+    const letters = 'アァイィウエオカキクケコサシスセソ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const hackTerms = ['HACKING', 'ACCESS GRANTED', 'BREACH', 'SYSTEM ERROR', 'PASSWORD CRACKED', 'ROOT ACCESS', 'CONNECTION LOST', 'CYBER ATTACK', 'SECURITY BREACH', 'YOU HAVE BEEN PWNED'];
+    const fontSize = 16;
+    const columns = Math.floor(canvas.width / fontSize);
+  
+    const fallSpeed = 10; // In pixels per frame
+  
+    // Each drop tracks its exact pixel position and last drawn line
+    const drops = Array(columns).fill().map(() => ({
+      y: 0,
+      lastDrawnRow: -1
+    }));
+  
+    const fadingChars = [];
+  
+    // Hack state
+    let isHacked = false;
+    let hackTimer = 0;
+  
+    // Random chance to trigger the hack effect
+    const hackChance = 0.0001; // 0.01% chance per frame
+  
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+      // Randomly trigger hack effect
+      if (!isHacked && Math.random() < hackChance) {
+        triggerHack();
+      }
+  
+      if (isHacked) {
+        // Hacked mode - turns red and shows hack terms
+        hackTimer--;
+        if (hackTimer <= 0) {
+          isHacked = false; // Reset to normal after 10 seconds
+          document.body.classList.remove('hacked'); // Remove the 'hacked' class
+        }
+  
+        // Draw hack terms as code rain
+        for (let i = 0; i < drops.length; i++) {
+          const drop = drops[i];
+          drop.y += fallSpeed;
+  
+          const currentRow = Math.floor(drop.y / fontSize);
+          if (currentRow !== drop.lastDrawnRow) {
+            const char = hackTerms[Math.floor(Math.random() * hackTerms.length)][Math.floor(Math.random() * hackTerms[0].length)];
+            const x = i * fontSize;
+            const y = currentRow * fontSize;
+  
+            fadingChars.push({
+              char,
+              x,
+              y,
+              opacity: 1.0,
+              isHackText: true // mark for red color
+            });
+  
+            drop.lastDrawnRow = currentRow;
+          }
+  
+          if (drop.y > canvas.height && Math.random() > 0.975) {
+            drop.y = 0;
+            drop.lastDrawnRow = -1;
+          }
+        }
+      } else {
+        // Normal matrix rain
+        for (let i = 0; i < drops.length; i++) {
+          const drop = drops[i];
+          drop.y += fallSpeed;
+  
+          const currentRow = Math.floor(drop.y / fontSize);
+          if (currentRow !== drop.lastDrawnRow) {
+            const char = letters[Math.floor(Math.random() * letters.length)];
+            const x = i * fontSize;
+            const y = currentRow * fontSize;
+  
+            fadingChars.push({
+              char,
+              x,
+              y,
+              opacity: 1.0,
+              isHackText: false // normal green rain
+            });
+  
+            drop.lastDrawnRow = currentRow;
+          }
+  
+          if (drop.y > canvas.height && Math.random() > 0.975) {
+            drop.y = 0;
+            drop.lastDrawnRow = -1;
+          }
+        }
+      }
+  
+      ctx.font = `${fontSize}px monospace`;
+  
+      for (let i = fadingChars.length - 1; i >= 0; i--) {
+        const { char, x, y, opacity, isHackText } = fadingChars[i];
+  
+        // If it's a hack term, make it red
+        ctx.fillStyle = isHackText
+          ? `rgba(255, 0, 0, ${opacity})` // red for hack terms
+          : `rgba(0, 255, 65, ${opacity})`; // matrix green for normal rain
+  
+        ctx.fillText(char, x, y);
+  
+        fadingChars[i].opacity -= 0.02;
+        if (fadingChars[i].opacity <= 0) {
+          fadingChars.splice(i, 1);
+        }
+      }
+  
+      requestAnimationFrame(draw);
+    }
+  
+    // Trigger hack effect
+    function triggerHack() {
+      isHacked = true;
+      hackTimer = 60 * 10; // Hack effect lasts for 10 seconds
+      document.body.classList.add('hacked'); // Add the 'hacked' class to body to trigger the red colors
+    }
+  
+    requestAnimationFrame(draw);
+  
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  });
+  
